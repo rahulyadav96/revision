@@ -9,6 +9,7 @@
 </head>
 <body>
     <header>
+          
         <div id="navbar-one" >
             <div class="navbar-left">
                 <div class="navbarlogoContainer">
@@ -64,55 +65,55 @@
                 <a href="#" class="add-tag">More Tags +</a>
             </div>
             <div class="tranding-tags-Container">
-                <a class="tag fst-tag">
+                <a class="tag fst-tag" href="#">
                     <div class="tag-title" style="background-color: rgb(50, 141, 103);">
                         <div class="tag-name">Board Games</div>
                         <div class="tag-posts">FEATURED • 3,895 Posts</div>
                     </div>
                 </a>
-                <a class="tag" style="background-image: url(./img/scdTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/scdTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(50, 141, 103);">
                         <div class="tag-name">2021</div>
                         <div class="tag-posts">895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/thirdTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/thirdTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(170, 51, 230);">
                         <div class="tag-name" >secret santa</div>
                         <div class="tag-posts">1120 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/forTag.png); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/forTag.png); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color:  rgb(80, 83, 90)">
                         <div class="tag-name">Bacon</div>
                         <div class="tag-posts">3,895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/fivTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/fivTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(129, 176, 87);">
                         <div class="tag-name">Inspiring</div>
                         <div class="tag-posts">53,895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/sixthTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/sixthTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(184, 94, 68);">
                         <div class="tag-name">Pondering my Orb</div>
                         <div class="tag-posts">3,895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/sevTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/sevTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(50, 141, 103);">
                         <div class="tag-name">Secret santa workshop</div>
                         <div class="tag-posts">3,895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/etTag.jpg); height: 130px; width: 110px;">
+                <a class="tag"href="#" style="background-image: url(./img/etTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(200, 55, 74);">
                         <div class="tag-name">Cristmas</div>
                         <div class="tag-posts">3,895 Posts</div>
                     </div> 
                 </a>
-                <a class="tag" style="background-image: url(./img/ninTag.jpg); height: 130px; width: 110px;">
+                <a class="tag" href="#" style="background-image: url(./img/ninTag.jpg); height: 130px; width: 110px;">
                     <div class="tag-title" style="background-color: rgb(145, 51, 141);">
                         <div class="tag-name">Disney</div>
                         <div class="tag-posts">3,895 Posts</div>
@@ -122,5 +123,50 @@
         </div>
 
     </header>
+    <main>
+        <div id="postContainer"></div>
+    </main>
 </body>
 </html>
+<script>
+
+   async function fetchData(){
+
+        let res = await fetch(`https://api.imgflip.com/get_memes`);
+        res = await res.json()
+        return res.data
+        
+    }
+    async function showData(){
+        let container = document.getElementById("postContainer");
+        let data =await fetchData();
+        
+
+        console.log(data)
+        data.memes.map(ele=>{
+
+            let div = document.createElement("div");
+            div.setAttribute("class","card")
+
+            let imgDiv = document.createElement("div");
+            let img = document.createElement("img");
+            img.setAttribute("src",ele.url)
+            imgDiv.setAttribute("class","imgCont")
+            imgDiv.appendChild(img);
+
+            let postTitle = document.createElement("div");
+            postTitle.setAttribute("class","post-title");
+            let p = document.createElement("p");
+            p.textContent = ele.name;
+
+            postTitle.appendChild(p)
+            div.append(imgDiv,postTitle)
+            container.append(div)
+
+        })
+
+    }
+
+    showData()
+    
+</script>
