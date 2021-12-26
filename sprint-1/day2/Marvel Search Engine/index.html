@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Search Engine</title>
+    <link rel="icon" href="https://star-wars-searchbar.vercel.app/emipire.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    body {
+        margin: 0;
+        background: #110b0b;
+    }
+
+    .main {
+        width: 80%;
+        margin: auto;
+        margin-top: 100px;
+        display: flex;
+        flex-direction: column;
+        background: transparent;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .main#main.active{
+        filter: blur(20px);
+        pointer-events: none;
+        user-select: none;
+    }
+    .search {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .search-box {
+        background-color: #2d2f30;
+        width: 50%;
+        margin: auto;
+        color: #f2f2f2;
+        border-radius: 20px;
+        font-size: 16px;
+    }
+
+    .input_box {
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: 0;
+        display: flex;
+        background: #2d2f30;
+        flex-direction: row;
+        gap: 5%;
+        justify-content: space-between;
+        color: #f2f2f2;
+        font-size: 16px;
+    }
+
+    .input_box input {
+        flex-grow: 1;
+        border: none;
+        color: white;
+        background-color: inherit;
+        outline: none;
+        font-size: 16px;
+
+    }
+
+    .logo {
+        width: 20%;
+        margin: auto;
+        margin-bottom: 35px;
+        box-shadow: 0 5px 30px rgb(236, 11, 60);
+    }
+
+    .logo img {
+        width: 100%;
+    }
+
+    .res_info {
+        margin: 10px 10px;
+        transition: 5s;
+        display: flex;
+        justify-content: space-between;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .res_info:hover>div>p:nth-child(1) {
+
+        color: #ff0022;
+
+    }
+
+    hr {
+        width: 99%;
+        margin: auto;
+        height: 1px;
+        border: none;
+        background-color: rgb(236, 11, 60);
+    }
+
+    #result {
+        text-align: center;
+        max-height: 400px;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+        scrollbar-color: rgb(236, 11, 60);
+        
+
+    }
+    #popup{
+        position: absolute;
+        transform: (-50%,-50%);
+        top: 50px;
+        width: 600px;
+        padding: 50px;
+        left: 25%;
+        box-shadow: 0 5px 30px rgb(236, 11, 60);
+        background-color: black;
+        color: white;
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.5s;
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+    }
+    .closeBtn{
+        width: 100px;
+        height: 80px;
+        padding: 10px 50px;
+        text-align: center;
+        background-color: tomato;
+        color: white;
+        text-decoration: none;
+        margin-top: 50px;
+        
+    }
+    .closeBtn:hover{
+        box-shadow: 0 5px 30px rgb(236, 11, 60);
+    }
+    #popup.active{
+        visibility: visible;
+        opacity: 1;
+        transition: 0.5s;
+    }
+    .bio{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .bio-top{
+        width: 50%;
+        margin:20px auto;
+       height: 300px;
+    }
+    .bio-top>div{
+        height: 100%;
+        width: 100%;
+    }
+    .bio-top>div>img{
+        width: 100%;
+        height: 100%;
+    }
+    .bio:nth-child(2){
+        display: flex;
+        justify-content: space-between;
+
+    }
+    .leftDiv, .leftDiv+div{
+        flex: 0.5;
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+
+
+<body>
+    <div class="main" id="main">
+        <div class="search">
+            <div class="logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/Marvel_Studios_logo.jpg"
+                    alt="starwars logo">
+            </div>
+            <div class="search-box">
+                <div class="input_box">
+                    <input type="text" id="inp" placeholder="Search Character" class="input-search"
+                        oninput="debounce(main,1000)">
+                    <div>
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDExOC43ODMgMTE4Ljc4MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+Cgk8cGF0aCBkPSJNMTE1Ljk3LDEwMS41OTdMODguNjYxLDc0LjI4NmM0LjY0LTcuMzg3LDcuMzMzLTE2LjExOCw3LjMzMy0yNS40ODhjMC0yNi41MDktMjEuNDktNDcuOTk2LTQ3Ljk5OC00Ny45OTYgICBTMCwyMi4yODksMCw0OC43OThjMCwyNi41MSwyMS40ODcsNDcuOTk1LDQ3Ljk5Niw0Ny45OTVjMTAuMTk3LDAsMTkuNjQyLTMuMTg4LDI3LjQxNC04LjYwNWwyNi45ODQsMjYuOTg2ICAgYzEuODc1LDEuODczLDQuMzMzLDIuODA2LDYuNzg4LDIuODA2YzIuNDU4LDAsNC45MTMtMC45MzMsNi43OTEtMi44MDZDMTE5LjcyLDExMS40MjMsMTE5LjcyLDEwNS4zNDcsMTE1Ljk3LDEwMS41OTd6ICAgIE00Ny45OTYsODEuMjQzYy0xNy45MTcsMC0zMi40NDMtMTQuNTI1LTMyLjQ0My0zMi40NDNzMTQuNTI2LTMyLjQ0NCwzMi40NDMtMzIuNDQ0YzE3LjkxOCwwLDMyLjQ0MywxNC41MjYsMzIuNDQzLDMyLjQ0NCAgIFM2NS45MTQsODEuMjQzLDQ3Ljk5Niw4MS4yNDN6IiBmaWxsPSIjMDAwMDAwIiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIj48L3BhdGg+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPC9nPjwvc3ZnPg=="
+                            alt="search" width="15px"
+                            style="background-color: rgb(224, 20, 71); padding: 10px; border-radius: 100%;">
+                    </div>
+                </div>
+                <div id="result"></div>
+
+            </div>
+        </div>
+
+    </div>
+    <div id="popup">
+        <div id="res"></div>
+        <div>
+
+            <a href="#" onclick="toggle()" class="closeBtn">Close</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    var con = document.getElementById("result");
+    var timerId;
+//toggle function 
+
+function toggle(){
+        var blur = document.getElementById("main");
+        blur.classList.toggle('active')
+        var popup = document.getElementById("popup");
+        popup.classList.toggle('active')
+    }
+    //fetching data from api
+    async function searchChar(char) {
+        let res = await fetch(`https://superheroapi.com/api/1610154132663321/search/${char}`);
+        let data = await res.json();
+
+        return data.results;
+    }
+
+
+    function append(c) {
+        con.innerHTML = ""
+        let hr = document.createElement('hr');
+        con.appendChild(hr);
+        let rescont = document.createElement("div")
+
+
+        console.log(c);
+
+        if (c.length == 0) {
+            let p = document.createElement('p');
+            p.textContent = "No such characters exist."
+            p.style.color = "red";
+            p.style.textTransform = "uppercase"
+            con.appendChild(p);
+            return false;
+        }
+        c.forEach(({ id, name, appearance }) => {
+
+            let resinfo = document.createElement("div");
+            resinfo.addEventListener("click", async function () {
+                toggle();
+                let characterData = await findCharacter(id);
+                console.log(characterData);
+                Biography(characterData);
+               
+            });
+
+            let title = document.createElement("div")
+
+            let C_name = document.createElement("p");
+            C_name.textContent = name;
+
+            let C_race = document.createElement("p");
+            C_race.textContent = appearance.race;
+
+            title.append(C_name, C_race);
+
+
+            let gen = document.createElement('p');
+            gen.textContent = appearance.gender;
+
+            resinfo.append(title, gen);
+            resinfo.setAttribute("class", 'res_info');
+
+
+            con.append(resinfo);
+
+        })
+    }
+    //after specified delay this function will execute 
+    async function main() {
+        let char = document.getElementById("inp").value;
+        if (char == "") {
+            con.innerHTML = ""
+            return false;
+        }
+        let starChar = await searchChar(char);  //calling search function for finding data through api
+        append(starChar);       //append function start executing from here
+    }
+    //debounce functon call initialy 
+    function debounce(func, delay) {
+        let char = document.getElementById("inp").value;
+
+        if (timerId) {
+            clearTimeout(timerId);
+        }
+
+        timerId = setTimeout(() => {
+            func()//executing main function
+        }, delay);
+    }
+
+    //find a character 
+    async function findCharacter(id) {
+        const character = await fetch(`https://superheroapi.com/api/1610154132663321/${id}`);
+        const data = await character.json();
+       return data;
+    }
+     function Biography(superman){
+        let popup = document.getElementById("res");
+        popup.innerHTML = ""
+        let bio = document.createElement('div');
+        bio.setAttribute("class","bio");
+        let topBio = document.createElement('div');
+        topBio.setAttribute("class","bio-top");
+       
+        let imgCon = document.createElement('div');
+        let img = document.createElement('img');
+        imgCon.appendChild(img);
+
+        img.setAttribute("src",superman.image.url);
+        let name = document.createElement('p');
+        name.textContent = superman.name;
+        topBio.append(imgCon,name);
+
+        let bottomBio =  document.createElement('div');
+        let occ = document.createElement('p');
+        occ.innerHTML = "OCCUPATION :"+" "+superman.work.occupation;
+        let base  = document.createElement('p');
+        base.innerHTML =  "BASE :"+" "+superman.work.base
+        bottomBio.append(occ,base)
+        // let leftDiv = document.createElement('div');
+        // leftDiv.setAttribute("class","leftDiv")
+        // let fullname = document.createElement('span');
+        
+        // fullname.textContent = "Full Name : "+superman.biography.full-name;
+        // let birthPlace =document.createElement('span'); 
+        // birthPlace.textContent = "Birth-Place : "+ superman.biography.place_of_birth;
+
+        // let gen = document.createElement('span');
+        // gen.textContent ="Gender : " + superman.appearance.gender;
+        
+        // leftDiv.append(fullname,birthPlace,gen);
+
+        // let rigthDiv = document.createElement('div');
+        // let eyeColor = document.createElement("span");
+        // eyeColor.textContent = "Eye Color :" + superman.appearance.eye-color;
+
+        // let heairColor = document.createElement("span");
+        // heairColor.textContent = "Hair Color :"+ superman.appearance.hair-color;
+
+        // let heigth = document.createElement("span");
+        // heigth.textContent = "Heigth :"+ superman.appearance.height[1];
+        // rigthDiv.append(eyeColor,heairColor,heigth);
+
+        // bottomBio.append(leftDiv,rigthDiv);
+
+        bio.append(topBio,bottomBio);
+        popup.append(bio);
+
+    }
+
+</script>
