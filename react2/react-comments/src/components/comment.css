@@ -1,0 +1,12 @@
+.card{
+    height: auto;
+    margin-left: 50px;
+    margin-top: 10px;
+    background-color: azure;
+    padding: 10px 20px;;
+    border-radius: 5px;
+}
+.auth{
+    font-size: 14px;
+    color: rgb(95, 85, 72);
+}
