@@ -14,7 +14,7 @@ function App() {
   }, [])
   return (
     <div className="App">
-      <div style={{width:"80%", margin:"auto"}}>
+      <div style={{width:"60%", margin:"auto"}}>
 
         {
           posts?.map(post => <Comment key={post.id} data={post} />)

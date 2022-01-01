@@ -10,3 +10,12 @@
     font-size: 14px;
     color: rgb(95, 85, 72);
 }
+.commentBox{
+    padding: 10px;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
